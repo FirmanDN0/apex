@@ -1,7 +1,7 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import { mockApi } from '@/lib/mock-api';
+import { postgresApi as mockApi } from '@/lib/postgres-api';
 import { formatNumber } from '@/lib/utils';
 import { AnalyticsSummary } from '@/types/api';
 import { motion } from 'framer-motion';

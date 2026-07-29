@@ -1,7 +1,7 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import { mockApi } from '@/lib/mock-api';
+import { postgresApi as mockApi } from '@/lib/postgres-api';
 import { ActivityLog } from '@/types/api';
 import { Activity, Clock, FilePlus, Image as ImageIcon, RefreshCw, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';

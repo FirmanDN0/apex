@@ -1,7 +1,7 @@
 'use client';
 
 import { useToast } from '@/components/ui/toast';
-import { mockApi } from '@/lib/mock-api';
+import { postgresApi as mockApi } from '@/lib/postgres-api';
 import { FetchProjectsParams, PaginatedResult } from '@/types/api';
 import { CreateProjectInput, Project, ProjectCategory, ProjectPriority, ProjectStatus, UpdateProjectInput } from '@/types/project';
 import { useCallback, useEffect, useState } from 'react';
