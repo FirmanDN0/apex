@@ -1,11 +1,11 @@
 'use client';
 
+import { getAnalyticsSummaryAction } from '@/app/actions/project-actions';
 import { Card } from '@/components/ui/card';
-import { postgresApi as mockApi } from '@/lib/postgres-api';
 import { formatNumber } from '@/lib/utils';
 import { AnalyticsSummary } from '@/types/api';
 import { motion } from 'framer-motion';
-import { Activity, CheckCircle2, Eye, FolderGit2, HardDrive, TrendingUp } from 'lucide-react';
+import { CheckCircle2, Eye, FolderGit2, HardDrive, TrendingUp } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 export function AnalyticsOverview() {
@@ -13,7 +13,7 @@ export function AnalyticsOverview() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    mockApi.getAnalyticsSummary().then((res) => {
+    getAnalyticsSummaryAction().then((res) => {
       setData(res);
       setLoading(false);
     });
@@ -41,13 +41,13 @@ export function AnalyticsOverview() {
     {
       title: 'Sudah Dipublikasi',
       value: data.publishedCount,
-      change: `${Math.round((data.publishedCount / data.totalProjects) * 100)}% dari total`,
+      change: `${data.totalProjects > 0 ? Math.round((data.publishedCount / data.totalProjects) * 100) : 0}% dari total`,
       icon: CheckCircle2,
       color: 'text-emerald-400',
       bgColor: 'bg-emerald-950/60 border-emerald-500/30'
     },
     {
-      title: 'Total Views Mock',
+      title: 'Total Views Supabase',
       value: formatNumber(data.totalViews),
       change: `+${data.monthlyGrowthRate}% bulan ini`,
       icon: Eye,
@@ -55,7 +55,7 @@ export function AnalyticsOverview() {
       bgColor: 'bg-purple-950/60 border-purple-500/30'
     },
     {
-      title: 'Penyimpanan Mock',
+      title: 'Penyimpanan Supabase',
       value: `${(data.storageUsedMB / 1024).toFixed(1)} GB`,
       change: `Maksimal ${(data.maxStorageMB / 1024).toFixed(0)} GB`,
       icon: HardDrive,
@@ -145,7 +145,7 @@ export function AnalyticsOverview() {
         <Card className="p-6 flex flex-col justify-between">
           <div>
             <h3 className="text-base font-semibold text-white mb-1">Distribusi Status</h3>
-            <p className="text-xs text-zinc-400 mb-6">Persentase status proyek di workspace</p>
+            <p className="text-xs text-zinc-400 mb-6">Persentase status proyek di database</p>
 
             <div className="flex flex-col gap-4">
               <div>
@@ -156,7 +156,7 @@ export function AnalyticsOverview() {
                 <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                   <div
                     className="bg-emerald-500 h-full rounded-full"
-                    style={{ width: `${(data.publishedCount / data.totalProjects) * 100}%` }}
+                    style={{ width: `${data.totalProjects > 0 ? (data.publishedCount / data.totalProjects) * 100 : 0}%` }}
                   />
                 </div>
               </div>
@@ -169,7 +169,7 @@ export function AnalyticsOverview() {
                 <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                   <div
                     className="bg-sky-500 h-full rounded-full"
-                    style={{ width: `${(data.inReviewCount / data.totalProjects) * 100}%` }}
+                    style={{ width: `${data.totalProjects > 0 ? (data.inReviewCount / data.totalProjects) * 100 : 0}%` }}
                   />
                 </div>
               </div>
@@ -182,7 +182,7 @@ export function AnalyticsOverview() {
                 <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                   <div
                     className="bg-amber-500 h-full rounded-full"
-                    style={{ width: `${(data.draftCount / data.totalProjects) * 100}%` }}
+                    style={{ width: `${data.totalProjects > 0 ? (data.draftCount / data.totalProjects) * 100 : 0}%` }}
                   />
                 </div>
               </div>

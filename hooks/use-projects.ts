@@ -1,7 +1,12 @@
 'use client';
 
+import {
+  createProjectAction,
+  deleteProjectAction,
+  fetchProjectsAction,
+  updateProjectAction
+} from '@/app/actions/project-actions';
 import { useToast } from '@/components/ui/toast';
-import { postgresApi as mockApi } from '@/lib/postgres-api';
 import { FetchProjectsParams, PaginatedResult } from '@/types/api';
 import { CreateProjectInput, Project, ProjectCategory, ProjectPriority, ProjectStatus, UpdateProjectInput } from '@/types/project';
 import { useCallback, useEffect, useState } from 'react';
@@ -44,10 +49,10 @@ export function useProjects(initialParams?: Partial<FetchProjectsParams>) {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await mockApi.getProjects(params);
+      const data = await fetchProjectsAction(params);
       setResult(data);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Gagal memuat data proyek.';
+      const msg = err instanceof Error ? err.message : 'Gagal memuat data proyek dari PostgreSQL.';
       setError(msg);
       toast.error('Error', msg);
     } finally {
@@ -88,8 +93,8 @@ export function useProjects(initialParams?: Partial<FetchProjectsParams>) {
   const createProject = async (input: CreateProjectInput): Promise<Project | null> => {
     setIsSubmitting(true);
     try {
-      const created = await mockApi.createProject(input);
-      toast.success('Berhasil Dibuat', `Proyek "${created.title}" telah dipublikasikan/disimpan.`);
+      const created = await createProjectAction(input);
+      toast.success('Berhasil Dibuat', `Proyek "${created.title}" telah dipublikasikan ke Supabase.`);
       await fetchProjects();
       return created;
     } catch (err) {
@@ -104,8 +109,8 @@ export function useProjects(initialParams?: Partial<FetchProjectsParams>) {
   const updateProject = async (id: string, input: UpdateProjectInput): Promise<Project | null> => {
     setIsSubmitting(true);
     try {
-      const updated = await mockApi.updateProject(id, input);
-      toast.success('Berhasil Memperbarui', `Proyek "${updated.title}" berhasil diperbarui.`);
+      const updated = await updateProjectAction(id, input);
+      toast.success('Berhasil Memperbarui', `Proyek "${updated.title}" berhasil diperbarui di Supabase.`);
       await fetchProjects();
       if (selectedProject?.id === id) {
         setSelectedProject(updated);
@@ -123,8 +128,8 @@ export function useProjects(initialParams?: Partial<FetchProjectsParams>) {
   const deleteProject = async (id: string): Promise<boolean> => {
     setIsSubmitting(true);
     try {
-      await mockApi.deleteProject(id);
-      toast.success('Berhasil Dihapus', 'Proyek telah dihapus dari sistem mock.');
+      await deleteProjectAction(id);
+      toast.success('Berhasil Dihapus', 'Proyek telah dihapus dari Supabase.');
       await fetchProjects();
       if (selectedProject?.id === id) {
         setSelectedProject(null);

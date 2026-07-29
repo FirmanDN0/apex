@@ -1,7 +1,7 @@
 'use client';
 
+import { getRecentActivitiesAction } from '@/app/actions/project-actions';
 import { Card } from '@/components/ui/card';
-import { postgresApi as mockApi } from '@/lib/postgres-api';
 import { ActivityLog } from '@/types/api';
 import { Activity, Clock, FilePlus, Image as ImageIcon, RefreshCw, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ export function ActivityFeed() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    mockApi.getRecentActivities().then((res) => {
+    getRecentActivitiesAction().then((res) => {
       setActivities(res);
       setLoading(false);
     });
@@ -30,7 +30,7 @@ export function ActivityFeed() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-base font-semibold text-white">Aktivitas Terbaru</h3>
-          <p className="text-xs text-zinc-400">Log perubahan proyek &amp; rilis di workspace</p>
+          <p className="text-xs text-zinc-400">Log perubahan proyek &amp; rilis di database Supabase</p>
         </div>
         <span className="text-[11px] font-mono text-zinc-400 bg-zinc-800 px-2.5 py-1 rounded-lg border border-zinc-700">
           Live Audit Stream
