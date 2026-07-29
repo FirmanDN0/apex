@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum ProjectStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProjectCategory {
+  Engineering
+  Design
+  Product
+  Marketing
+  Infrastructure
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Project {
+  id           String          @id @default(uuid())
+  title        String
+  slug         String          @unique
+  summary      String
+  description  String          @db.Text
+  coverImage   String          @default("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80")
+  category     ProjectCategory @default(Engineering)
+  status       ProjectStatus   @default(DRAFT)
+  priority     ProjectPriority @default(MEDIUM)
+  tags         String[]
+  views        Int             @default(1)
+  featured     Boolean         @default(false)
+  authorName   String          @default("Elena Rostova")
+  authorAvatar String          @default("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80")
+  authorRole   String          @default("Principal Lead")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+  @@map("projects")
+}
+
+model Activity {
+  id         String   @id @default(uuid())
+  userName   String
+  userAvatar String?
+  action     String
+  target     String
+  targetId   String?
+  createdAt  DateTime @default(now())
+
+  @@map("activities")
+}
